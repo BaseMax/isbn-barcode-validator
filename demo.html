@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISBN Barcode Validator - Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 ISBN Barcode Validator - Demo</h1>
+            <p class="subtitle">Example validation results for a PDF cover with ISBN barcode</p>
+        </header>
+
+        <main>
+            <section class="preview-section">
+                <h2>Sample PDF Preview</h2>
+                <div class="pdf-container">
+                    <div style="padding: 40px; background: #f0f0f0; text-align: center; border-radius: 8px;">
+                        <p style="color: #666; font-size: 1.2rem;">📖 Book Cover with ISBN Barcode</p>
+                        <div style="margin: 20px auto; width: 200px; height: 120px; background: white; border: 2px solid #333; display: flex; align-items: center; justify-content: center;">
+                            <div style="display: flex; gap: 2px;">
+                                <div style="width: 3px; height: 80px; background: black;"></div>
+                                <div style="width: 2px; height: 80px; background: white;"></div>
+                                <div style="width: 4px; height: 80px; background: black;"></div>
+                                <div style="width: 2px; height: 80px; background: white;"></div>
+                                <div style="width: 3px; height: 80px; background: black;"></div>
+                                <div style="width: 2px; height: 80px; background: white;"></div>
+                                <div style="width: 4px; height: 80px; background: black;"></div>
+                                <div style="width: 2px; height: 80px; background: white;"></div>
+                                <div style="width: 3px; height: 80px; background: black;"></div>
+                                <div style="width: 2px; height: 80px; background: white;"></div>
+                                <div style="width: 4px; height: 80px; background: black;"></div>
+                                <div style="width: 2px; height: 80px; background: white;"></div>
+                                <div style="width: 3px; height: 80px; background: black;"></div>
+                            </div>
+                        </div>
+                        <p style="color: #333; font-family: monospace; margin-top: 10px;">ISBN: 978-0-123456-78-9</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <h2>Validation Results</h2>
+                <div id="resultsContent">
+                    <div class="result-summary pass">
+                        ✓ VALIDATION PASSED
+                    </div>
+
+                    <div class="result-item success">
+                        <h3>✅ ✓ Barcode Size Compliance</h3>
+                        <p>Detected barcode dimensions:</p>
+                        <div class="barcode-details">
+                            <strong>Width:</strong> <span class="metric-value">1.47"</span> 
+                            (Minimum: 1.02") ✓<br>
+                            <strong>Height:</strong> <span class="metric-value">1.02"</span> 
+                            (Minimum: 0.8") ✓
+                        </div>
+                    </div>
+
+                    <div class="result-item success">
+                        <h3>✅ ✓ Quiet Zones Adequate</h3>
+                        <p>Quiet zone measurements:</p>
+                        <div class="barcode-details">
+                            <strong>Left:</strong> <span class="metric-value">0.38"</span> 
+                            (Required: 0.36") ✓<br>
+                            <strong>Right:</strong> <span class="metric-value">0.30"</span> 
+                            (Required: 0.28") ✓<br>
+                            <strong>Top:</strong> <span class="metric-value">0.06"</span> 
+                            (Required: 0.05") ✓<br>
+                            <strong>Bottom:</strong> <span class="metric-value">0.07"</span> 
+                            (Required: 0.05") ✓
+                        </div>
+                    </div>
+
+                    <div class="result-item success">
+                        <h3>✅ ✓ Scaling Compliance</h3>
+                        <p>Barcode scaling analysis:</p>
+                        <div class="barcode-details">
+                            <strong>Current Scale:</strong> <span class="metric-value">100%</span><br>
+                            <strong>Acceptable Range:</strong> 80% - 200%<br>
+                            <strong>Recommended:</strong> 100%
+                        </div>
+                        <p style="color: #10b981; margin-top: 10px;">✓ Scaling is optimal.</p>
+                    </div>
+
+                    <div class="result-item success">
+                        <h3>✅ ✓ ISBN Format Valid</h3>
+                        <p>ISBN barcode format analysis:</p>
+                        <div class="barcode-details">
+                            <strong>Expected Format:</strong> EAN-13 (ISBN-13)<br>
+                            <strong>Aspect Ratio:</strong> 1.44<br>
+                            <strong>Pattern:</strong> Compatible with EAN-13
+                        </div>
+                        <p style="margin-top: 10px;"><em>Note: Full validation requires actual barcode scanning and checksum verification.</em></p>
+                    </div>
+
+                    <div class="result-item success">
+                        <h3>✅ ✓ Aspect Ratio Maintained</h3>
+                        <p>Aspect ratio validation:</p>
+                        <div class="barcode-details">
+                            <strong>Current Ratio:</strong> <span class="metric-value">1.44</span><br>
+                            <strong>Expected Ratio:</strong> 1.44<br>
+                            <strong>Deviation:</strong> 0.0%
+                        </div>
+                    </div>
+
+                    <div class="result-item success">
+                        <h3>✅ Distribution Ready</h3>
+                        <p>This barcode meets all distribution requirements and should scan reliably across different retail environments.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <h2>About This Demo</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>📋 What You See</h3>
+                        <p>This demo shows example validation results for a properly formatted ISBN barcode on a book cover. All checks have passed, indicating the barcode meets distribution standards.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🔧 How It Works</h3>
+                        <p>The actual validator (index.html) accepts PDF files, analyzes them using PDF.js and Canvas APIs, and performs comprehensive validation checks against industry standards.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>✓ Validation Checks</h3>
+                        <p>The tool validates: barcode size (min 1.02" × 0.8"), quiet zones (margins), scaling (80-200%), ISBN format, and aspect ratio to ensure scanability.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🚀 Try It Yourself</h3>
+                        <p>Open <strong>index.html</strong> to upload your own PDF book covers and validate their ISBN barcodes. Works with any modern web browser.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <h2>Example Failure Scenarios</h2>
+                <div class="result-item error">
+                    <h3>❌ ✗ Barcode Size Issue</h3>
+                    <p>Example of a barcode that's too small:</p>
+                    <div class="barcode-details">
+                        <strong>Width:</strong> <span class="metric-value">0.85"</span> 
+                        (Minimum: 1.02") ✗<br>
+                        <strong>Height:</strong> <span class="metric-value">0.65"</span> 
+                        (Minimum: 0.8") ✗
+                    </div>
+                    <p style="color: #ef4444; margin-top: 10px;">⚠️ Barcode is too small for reliable scanning.</p>
+                </div>
+
+                <div class="result-item warning">
+                    <h3>⚠️ ⚠ Quiet Zone Issues</h3>
+                    <p>Example of insufficient quiet zones:</p>
+                    <div class="barcode-details">
+                        <strong>Left:</strong> <span class="metric-value">0.15"</span> 
+                        (Required: 0.36") ✗<br>
+                        <strong>Right:</strong> <span class="metric-value">0.10"</span> 
+                        (Required: 0.28") ✗
+                    </div>
+                    <p style="color: #f59e0b; margin-top: 10px;">⚠️ Insufficient quiet zones may affect scannability.</p>
+                </div>
+            </section>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="index.html" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 15px 40px; font-size: 1.1rem;">
+                    Try the Live Validator
+                </a>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2024 ISBN Barcode Validator - Ensuring distribution compliance</p>
+        </footer>
+    </div>
+</body>
+</html>
