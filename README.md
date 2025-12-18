@@ -91,8 +91,7 @@ npx http-server
 
 ### Dependencies
 All dependencies are loaded via CDN:
-- PDF.js v3.11.174
-- JsBarcode v3.11.6
+- PDF.js v3.11.174 (for PDF rendering and parsing)
 
 ## How It Works
 
@@ -116,6 +115,14 @@ This validator checks compliance with:
 - Barcode detection is based on contrast analysis (not full OCR)
 - Cannot validate actual ISBN checksum without barcode reading library
 - Best results with clear, high-quality PDF covers
+
+## Security Considerations
+
+For production deployment, consider:
+- Hosting PDF.js library files locally instead of using CDN
+- Adding Subresource Integrity (SRI) hashes to external script tags
+- Implementing Content Security Policy (CSP) headers
+- Running the application over HTTPS
 
 ## Contributing
 

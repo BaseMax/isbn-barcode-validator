@@ -31,6 +31,17 @@ const STANDARDS = {
     dpi: 300              // Standard print resolution
 };
 
+// Barcode detection constants
+const DETECTION_CONSTANTS = {
+    blockSize: 50,              // Size of analysis blocks in pixels for contrast detection
+    contrastThreshold: 80,      // Minimum contrast value to identify barcode regions
+    regionExpandX: 100,         // Horizontal expansion in pixels to capture full barcode
+    regionExpandY: 50,          // Vertical expansion in pixels to capture full barcode
+    maxRegionWidth: 400,        // Maximum barcode width in pixels
+    maxRegionHeight: 200,       // Maximum barcode height in pixels
+    maxAspectRatioDeviation: 0.15 // Allow 15% deviation in aspect ratio
+};
+
 // Event Listeners
 uploadArea.addEventListener('click', () => fileInput.click());
 uploadArea.addEventListener('dragover', handleDragOver);
@@ -58,7 +69,7 @@ function handleDrop(e) {
     if (files.length > 0 && files[0].type === 'application/pdf') {
         loadPDF(files[0]);
     } else {
-        alert('Please drop a PDF file');
+        showNotification('Please drop a PDF file', 'error');
     }
 }
 
@@ -67,14 +78,14 @@ function handleFileSelect(e) {
     if (file && file.type === 'application/pdf') {
         loadPDF(file);
     } else {
-        alert('Please select a PDF file');
+        showNotification('Please select a PDF file', 'error');
     }
 }
 
 async function loadPDF(file) {
     try {
         if (typeof pdfjsLib === 'undefined') {
-            alert('PDF.js library failed to load. Please check your internet connection and refresh the page.');
+            showNotification('PDF.js library failed to load. Please check your internet connection and refresh the page.', 'error');
             return;
         }
         
@@ -102,16 +113,17 @@ async function loadPDF(file) {
         // Show preview section
         previewSection.style.display = 'block';
         resultsSection.style.display = 'none';
+        showNotification('PDF loaded successfully! Click "Validate Barcode" to analyze.', 'success');
         
     } catch (error) {
         console.error('Error loading PDF:', error);
-        alert('Error loading PDF file. Please try another file.');
+        showNotification('Error loading PDF file. Please try another file.', 'error');
     }
 }
 
 function validateBarcode() {
     if (!currentImageData) {
-        alert('Please load a PDF file first');
+        showNotification('Please load a PDF file first', 'error');
         return;
     }
     
@@ -179,12 +191,12 @@ function detectBarcodeRegion(imageData) {
     
     // Find regions with high contrast (likely barcode areas)
     const regions = [];
-    const blockSize = 50;
+    const blockSize = DETECTION_CONSTANTS.blockSize;
     
     for (let y = 0; y < height - blockSize; y += blockSize) {
         for (let x = 0; x < width - blockSize; x += blockSize) {
             const contrast = calculateBlockContrast(data, x, y, blockSize, width);
-            if (contrast > 80) {
+            if (contrast > DETECTION_CONSTANTS.contrastThreshold) {
                 regions.push({ x, y, width: blockSize, height: blockSize, contrast });
             }
         }
@@ -200,10 +212,10 @@ function detectBarcodeRegion(imageData) {
     
     // Expand region to capture full barcode
     const expandedRegion = {
-        x: Math.max(0, bestRegion.x - 100),
-        y: Math.max(0, bestRegion.y - 50),
-        width: Math.min(width - bestRegion.x + 100, 400),
-        height: Math.min(height - bestRegion.y + 50, 200),
+        x: Math.max(0, bestRegion.x - DETECTION_CONSTANTS.regionExpandX),
+        y: Math.max(0, bestRegion.y - DETECTION_CONSTANTS.regionExpandY),
+        width: Math.min(width - bestRegion.x + DETECTION_CONSTANTS.regionExpandX, DETECTION_CONSTANTS.maxRegionWidth),
+        height: Math.min(height - bestRegion.y + DETECTION_CONSTANTS.regionExpandY, DETECTION_CONSTANTS.maxRegionHeight),
         pixelsPerInch: STANDARDS.dpi // Assume 300 DPI for typical PDF
     };
     
@@ -357,7 +369,7 @@ function validateAspectRatio(region) {
     const expectedRatio = STANDARDS.nominalWidth / STANDARDS.nominalHeight;
     const deviation = Math.abs(aspectRatio - expectedRatio) / expectedRatio;
     
-    const pass = deviation < 0.15; // Allow 15% deviation
+    const pass = deviation < DETECTION_CONSTANTS.maxAspectRatioDeviation;
     
     return {
         type: pass ? 'success' : 'warning',
@@ -420,4 +432,30 @@ function clearAll() {
     
     const context = pdfCanvas.getContext('2d');
     context.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height);
+}
+
+// Notification system - better UX than alert()
+function showNotification(message, type = 'info') {
+    // Remove any existing notifications
+    const existingNotification = document.querySelector('.notification-toast');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification-toast notification-${type}`;
+    notification.textContent = message;
+    
+    // Add to document
+    document.body.appendChild(notification);
+    
+    // Trigger animation
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
 }

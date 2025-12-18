@@ -318,6 +318,42 @@ footer {
     margin: 0 5px;
 }
 
+/* Notification Toast */
+.notification-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 10000;
+    max-width: 400px;
+    word-wrap: break-word;
+}
+
+.notification-toast.show {
+    transform: translateX(0);
+}
+
+.notification-success {
+    border-left: 5px solid #10b981;
+    color: #10b981;
+}
+
+.notification-error {
+    border-left: 5px solid #ef4444;
+    color: #ef4444;
+}
+
+.notification-info {
+    border-left: 5px solid #667eea;
+    color: #667eea;
+}
+
 @media (max-width: 768px) {
     header h1 {
         font-size: 2rem;
@@ -333,5 +369,11 @@ footer {
 
     .info-grid {
         grid-template-columns: 1fr;
+    }
+
+    .notification-toast {
+        right: 10px;
+        left: 10px;
+        max-width: none;
     }
 }
