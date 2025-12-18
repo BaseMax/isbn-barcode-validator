@@ -1,5 +1,7 @@
 // Initialize PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+}
 
 // Global variables
 let currentPdfDoc = null;
@@ -71,6 +73,11 @@ function handleFileSelect(e) {
 
 async function loadPDF(file) {
     try {
+        if (typeof pdfjsLib === 'undefined') {
+            alert('PDF.js library failed to load. Please check your internet connection and refresh the page.');
+            return;
+        }
+        
         const arrayBuffer = await file.arrayBuffer();
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         currentPdfDoc = await loadingTask.promise;

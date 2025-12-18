@@ -1,0 +1,24 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.log
+.cache/
+
+# Node modules (if added later)
+node_modules/
+
+# Build artifacts
+dist/
+build/
+
+# Test coverage
+coverage/
