@@ -1,13 +1,10 @@
-// Initialize PDF.js worker
 if (typeof pdfjsLib !== 'undefined') {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 }
 
-// Global variables
 let currentPdfDoc = null;
 let currentImageData = null;
 
-// DOM elements
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
 const previewSection = document.getElementById('previewSection');
@@ -17,7 +14,6 @@ const validateBtn = document.getElementById('validateBtn');
 const clearBtn = document.getElementById('clearBtn');
 const pdfCanvas = document.getElementById('pdfCanvas');
 
-// Validation standards (in inches)
 const STANDARDS = {
     minWidth: 1.02,      // inches
     minHeight: 0.8,      // inches
@@ -42,7 +38,6 @@ const DETECTION_CONSTANTS = {
     maxAspectRatioDeviation: 0.15 // Allow 15% deviation in aspect ratio
 };
 
-// Event Listeners
 uploadArea.addEventListener('click', () => fileInput.click());
 uploadArea.addEventListener('dragover', handleDragOver);
 uploadArea.addEventListener('dragleave', handleDragLeave);
@@ -93,7 +88,6 @@ async function loadPDF(file) {
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         currentPdfDoc = await loadingTask.promise;
         
-        // Render first page
         const page = await currentPdfDoc.getPage(1);
         const viewport = page.getViewport({ scale: 2.0 });
         
@@ -107,10 +101,8 @@ async function loadPDF(file) {
             viewport: viewport
         }).promise;
         
-        // Store image data for analysis
         currentImageData = context.getImageData(0, 0, canvas.width, canvas.height);
         
-        // Show preview section
         previewSection.style.display = 'block';
         resultsSection.style.display = 'none';
         showNotification('PDF loaded successfully! Click "Validate Barcode" to analyze.', 'success');
@@ -139,7 +131,6 @@ function performValidation() {
     const results = [];
     let overallPass = true;
     
-    // Detect barcode region
     const barcodeRegion = detectBarcodeRegion(currentImageData);
     
     if (!barcodeRegion) {
@@ -152,27 +143,22 @@ function performValidation() {
         return;
     }
     
-    // 1. Validate barcode size
     const sizeValidation = validateBarcodeSize(barcodeRegion);
     results.push(sizeValidation);
     if (!sizeValidation.pass) overallPass = false;
     
-    // 2. Validate quiet zones
     const quietZoneValidation = validateQuietZones(barcodeRegion);
     results.push(quietZoneValidation);
     if (!quietZoneValidation.pass) overallPass = false;
     
-    // 3. Validate scaling
     const scalingValidation = validateScaling(barcodeRegion);
     results.push(scalingValidation);
     if (!scalingValidation.pass) overallPass = false;
     
-    // 4. Validate ISBN format
     const isbnValidation = validateISBNFormat(barcodeRegion);
     results.push(isbnValidation);
     if (!isbnValidation.pass) overallPass = false;
     
-    // 5. Check aspect ratio
     const aspectRatioValidation = validateAspectRatio(barcodeRegion);
     results.push(aspectRatioValidation);
     if (!aspectRatioValidation.pass) overallPass = false;
@@ -181,15 +167,10 @@ function performValidation() {
 }
 
 function detectBarcodeRegion(imageData) {
-    // Simplified barcode detection
-    // In a real implementation, you would use computer vision algorithms
-    // For this demo, we'll simulate barcode detection based on image analysis
-    
     const width = imageData.width;
     const height = imageData.height;
     const data = imageData.data;
     
-    // Find regions with high contrast (likely barcode areas)
     const regions = [];
     const blockSize = DETECTION_CONSTANTS.blockSize;
     
@@ -206,17 +187,15 @@ function detectBarcodeRegion(imageData) {
         return null;
     }
     
-    // Find the most likely barcode region (highest contrast area)
     regions.sort((a, b) => b.contrast - a.contrast);
     const bestRegion = regions[0];
     
-    // Expand region to capture full barcode
     const expandedRegion = {
         x: Math.max(0, bestRegion.x - DETECTION_CONSTANTS.regionExpandX),
         y: Math.max(0, bestRegion.y - DETECTION_CONSTANTS.regionExpandY),
         width: Math.min(width - bestRegion.x + DETECTION_CONSTANTS.regionExpandX, DETECTION_CONSTANTS.maxRegionWidth),
         height: Math.min(height - bestRegion.y + DETECTION_CONSTANTS.regionExpandY, DETECTION_CONSTANTS.maxRegionHeight),
-        pixelsPerInch: STANDARDS.dpi // Assume 300 DPI for typical PDF
+        pixelsPerInch: STANDARDS.dpi
     };
     
     return expandedRegion;
@@ -265,7 +244,6 @@ function validateBarcodeSize(region) {
 }
 
 function validateQuietZones(region) {
-    // Calculate quiet zones (white space around barcode)
     const leftZone = region.x / region.pixelsPerInch;
     const rightZone = (pdfCanvas.width - (region.x + region.width)) / region.pixelsPerInch;
     const topZone = region.y / region.pixelsPerInch;
@@ -338,10 +316,6 @@ function validateScaling(region) {
 }
 
 function validateISBNFormat(region) {
-    // Simulate ISBN validation
-    // In a real implementation, you would use barcode reading libraries
-    // For demo purposes, we'll perform a probabilistic check
-    
     const isLikelyISBN = region.width / region.height > 1.2 && region.width / region.height < 2.0;
     
     const pass = isLikelyISBN;
@@ -434,26 +408,20 @@ function clearAll() {
     context.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height);
 }
 
-// Notification system - better UX than alert()
 function showNotification(message, type = 'info') {
-    // Remove any existing notifications
     const existingNotification = document.querySelector('.notification-toast');
     if (existingNotification) {
         existingNotification.remove();
     }
     
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification-toast notification-${type}`;
     notification.textContent = message;
     
-    // Add to document
     document.body.appendChild(notification);
     
-    // Trigger animation
     setTimeout(() => notification.classList.add('show'), 10);
     
-    // Auto-remove after 4 seconds
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
