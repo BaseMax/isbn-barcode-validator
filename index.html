@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISBN Barcode Validator for PDF Covers</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 ISBN Barcode Validator</h1>
+            <p class="subtitle">Validate ISBN barcodes in PDF covers for distribution compliance</p>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📄</div>
+                    <h2>Drop PDF Cover Here</h2>
+                    <p>or</p>
+                    <label for="fileInput" class="btn-upload">Choose PDF File</label>
+                    <input type="file" id="fileInput" accept=".pdf" hidden>
+                    <p class="file-hint">Supports PDF files with ISBN barcodes</p>
+                </div>
+            </section>
+
+            <section class="preview-section" id="previewSection" style="display: none;">
+                <h2>PDF Preview</h2>
+                <div class="pdf-container">
+                    <canvas id="pdfCanvas"></canvas>
+                </div>
+                <div class="controls">
+                    <button id="validateBtn" class="btn-primary">Validate Barcode</button>
+                    <button id="clearBtn" class="btn-secondary">Clear</button>
+                </div>
+            </section>
+
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>Validation Results</h2>
+                <div id="resultsContent"></div>
+            </section>
+
+            <section class="info-section">
+                <h2>Validation Criteria</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>📏 Barcode Size</h3>
+                        <p>Minimum width: 1.02 inches (25.9mm)<br>
+                        Minimum height: 0.8 inches (20.3mm)<br>
+                        Maximum magnification: 200%</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🔲 Quiet Zones</h3>
+                        <p>Left zone: 9X minimum (0.36 inches)<br>
+                        Right zone: 7X minimum (0.28 inches)<br>
+                        Top/Bottom: 0.05 inches minimum</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>✓ ISBN Format</h3>
+                        <p>ISBN-10: 10 digits<br>
+                        ISBN-13: 13 digits<br>
+                        EAN-13 compatible barcode</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>📐 Scaling</h3>
+                        <p>Recommended: 100%<br>
+                        Minimum: 80%<br>
+                        Maximum: 200%<br>
+                        Aspect ratio must be maintained</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2024 ISBN Barcode Validator - Ensuring distribution compliance</p>
+        </footer>
+    </div>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
